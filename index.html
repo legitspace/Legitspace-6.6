@@ -196,13 +196,12 @@ function showSnack(msg){
 // RSS ielāde no LSM
 async function loadRSS(){
   try{
-    const rssUrl='https://www.lsm.lv/rss/';
-    const res=await fetch(rssUrl);
-    const text=await res.text();
-    const xml=new window.DOMParser().parseFromString(text,"text/xml");
-    const items=[...xml.querySelectorAll('item')].slice(0,4);
-    const feed=document.getElementById('rssFeed');
-    feed.innerHTML='';
+    // Izmanto publisku proxy, lai apietu CORS
+const rssUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.lsm.lv/rss/');
+const res = await fetch(rssUrl);
+const data = await res.json();
+const text = data.contents;
+;
     items.forEach(item=>{
       const title=item.querySelector('title').textContent;
 const desc=item.querySelector('description')?.textContent?.slice(0,200)||'';
