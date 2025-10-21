@@ -235,7 +235,7 @@ async function loadChat(room){
 }
 function renderMsg(m){
   const div=document.createElement('div');
-  div.textContent=\`\${m.username||'Anon'}: \${m.text}\`;
+  div.textContent=`${m.username || 'Anon'}: ${m.text}`;
   chatBox.appendChild(div);
   chatBox.scrollTop=chatBox.scrollHeight;
 }
