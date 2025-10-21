@@ -205,19 +205,19 @@ async function loadRSS(){
     feed.innerHTML='';
     items.forEach(item=>{
       const title=item.querySelector('title').textContent;
-      const desc=item.querySelector('description')?.textContent?.slice(0,200)||'';
-      const link=item.querySelector('link').textContent;
-      const pub=item.querySelector('pubDate').textContent;
-      const div=document.createElement('div');
-      div.innerHTML=\`
-        <div style="background:#fff;border-radius:12px;padding:12px;">
-          <a href="\${link}" target="_blank" style="font-weight:bold;color:#111;text-decoration:none;">\${title}</a>
-          <p style="color:#444;font-size:14px;margin:6px 0;">\${desc}...</p>
-          <small style="color:#777;">\${pub}</small>
-        </div>\`;
-      feed.appendChild(div);
-    });
-  }catch(e){console.log('RSS kļūda',e)}
+const desc=item.querySelector('description')?.textContent?.slice(0,200)||'';
+const link=item.querySelector('link').textContent;
+const pub=item.querySelector('pubDate').textContent;
+const div=document.createElement('div');
+div.innerHTML=`
+  <div style="background:#fff;border-radius:12px;padding:12px;">
+    <a href="${link}" target="_blank" style="font-weight:bold;color:#111;text-decoration:none;">${title}</a>
+    <p style="color:#444;font-size:14px;margin:6px 0;">${desc}...</p>
+    <small style="color:#777;">${pub}</small>
+  </div>`;
+feed.appendChild(div);
+});
+}catch(e){console.log('RSS kļūda',e)}
 }
 loadRSS();
 
