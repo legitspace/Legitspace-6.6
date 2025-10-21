@@ -195,24 +195,36 @@ function showSnack(msg){
 
 // RSS ielāde no LSM
 async function loadRSS(){
-  try{
-    // CORS proxy
+  try {
+    // izmanto publisku proxy, lai apietu CORS
     const rssUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.lsm.lv/rss/');
     const res = await fetch(rssUrl);
     const data = await res.json();
-    const text = data.contents;
 
-    const xml = new window.DOMParser().parseFromString(text,"text/xml");
-    const items = [...xml.querySelectorAll('item')].slice(0,4);
+    if (!data || !data.contents) {
+      console.log('RSS: tukšs saturs vai proxy kļūda');
+      return;
+    }
+
+    const text = data.contents;
+    const xml = new window.DOMParser().parseFromString(text, "text/xml");
+    const items = [...xml.querySelectorAll('item')].slice(0, 4);
+
     const feed = document.getElementById('rssFeed');
     feed.innerHTML = '';
-    items.forEach(item=>{
-      const title=item.querySelector('title').textContent;
-      const desc=item.querySelector('description')?.textContent?.slice(0,200)||'';
-      const link=item.querySelector('link').textContent;
-      const pub=item.querySelector('pubDate').textContent;
-      const div=document.createElement('div');
-      div.innerHTML=`
+
+    if (items.length === 0) {
+      feed.innerHTML = '<p>Nav pieejamu ziņu no LSM.</p>';
+      return;
+    }
+
+    items.forEach(item => {
+      const title = item.querySelector('title')?.textContent || '(Bez virsraksta)';
+      const desc = item.querySelector('description')?.textContent?.slice(0, 200) || '';
+      const link = item.querySelector('link')?.textContent || '#';
+      const pub = item.querySelector('pubDate')?.textContent || '';
+      const div = document.createElement('div');
+      div.innerHTML = `
         <div style="background:#fff;border-radius:12px;padding:12px;">
           <a href="${link}" target="_blank" style="font-weight:bold;color:#111;text-decoration:none;">${title}</a>
           <p style="color:#444;font-size:14px;margin:6px 0;">${desc}...</p>
@@ -220,8 +232,12 @@ async function loadRSS(){
         </div>`;
       feed.appendChild(div);
     });
-  }catch(e){console.log('RSS kļūda',e)}
+
+  } catch (e) {
+    console.log('RSS kļūda', e);
+  }
 }
+
 
 loadRSS();
 
